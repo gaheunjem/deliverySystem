@@ -52,6 +52,13 @@ static void printStorageInside(int x, int y) {
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
 	
+	deliverySystem[x][y].building=NULL;
+	deliverySystem[x][y].room=NULL;
+	deliverySystem[x][y].cnt=NULL;
+	deliverySystem[x][y].passwd=NULL;
+	
+	
+	
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -59,6 +66,20 @@ static void initStorage(int x, int y) {
 //return : 0 - password is matching, -1 - password is not matching
 static int inputPasswd(int x, int y) {
 	
+	int a;
+	char s1[PASSWD_LEN+1];
+	printf(" - input password for (%d,%d ) storage : ",x,y);
+	scanf("%s",&s1);
+	a=strcmp(s1, deliverySystem[x][y].passwd); 
+	
+	if(a==0)
+	{
+		return 0;
+	}
+	else if(a==1)
+	{
+		return -1;
+	}
 }
 
 
@@ -72,7 +93,7 @@ static int inputPasswd(int x, int y) {
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) {
 	
-	int i,j
+	int i,j;
 	FILE *fp;
 	
 	fp=fopen("storage.txt","w");
@@ -84,10 +105,8 @@ int str_backupSystem(char* filepath) {
 		{
 			if(deliverySystem[i][j].cnt==1)
 			{
-				fprintf(fp,deliverySystem[i][j].building);
-				fprintf(fp,deliverySystem[i][j].room);
-				fprintf(fp,deliverySystem[i][j].passwd);
-				fprintf(fp,deliverySystem[i][j].context);
+				fprintf(fp,"%d %d %s %s",deliverySystem[i][j].building,deliverySystem[i][j].room,
+				deliverySystem[i][j].passwd,deliverySystem[i][j].context);
 			}
 		}
 	}
@@ -112,6 +131,9 @@ int str_createSystem(char* filepath) {
 	FILE *fp;
 	fp=fopen(filepath,"r");
 	
+	fscanf(fp,"")
+	
+	
 	return 0;
 	
 }
@@ -126,9 +148,6 @@ void str_freeSystem(void) {
 //print the current state of the whole delivery system (which cells are occupied and the destination of the each occupied cells)
 void str_printStorageStatus(void) {
 	
-
-	//systemSize[0]=4;
-	//systemSize[1]=6;
 	
 	
 	int i, j;
@@ -187,6 +206,21 @@ int str_checkStorage(int x, int y) {
 //return : 0 - successfully put the package, -1 - failed to put
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_SIZE+1], char passwd[PASSWD_LEN+1]) {
 	
+	if(deliverySystem[x][y].cnt==0)
+	{
+		deliverySystem[x][y].building=nBuilding;
+		deliverySystem[x][y].room=nRoom;
+		deliverySystem[x][y].context=msg[MAX_MSG_SIZE+1];
+		deliverySystem[x][y].passwd=passwd[PASSWD_LEN+1];
+		
+		deliverySystem[x][y].cnt=1;
+		
+		return 0;
+	}
+	else if()
+	{
+		return -1;
+	}
 	
 }
 
@@ -198,6 +232,19 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 //return : 0 - successfully extracted, -1 = failed to extract
 int str_extractStorage(int x, int y) {
 	
+	
+	if(inputPasswd(x,y)==0)
+	{
+		
+		printStorageInside(x,y);
+		initStorage(x,y);
+		
+		return 0;
+	}
+	else if(inputPasswd(x, y)==1)
+	{
+		return -1;
+	}
 }
 
 //find my package from the storage
@@ -206,6 +253,17 @@ int str_extractStorage(int x, int y) {
 //return : number of packages that the storage system has
 int str_findStorage(int nBuilding, int nRoom) {
 	
+	int i,j;
+	for(i=0;i<systemSize[0];i++)
+	{
+		for(j=0;j<systemSize[1];j++)
+		{
+			if()
+			{
+				
+			}
+		}
+	}
 	return cnt;
 }
 

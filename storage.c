@@ -52,10 +52,10 @@ static void printStorageInside(int x, int y) {
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
 	
-	deliverySystem[x][y].building=NULL;
-	deliverySystem[x][y].room=NULL;
-	deliverySystem[x][y].cnt=NULL;
-	deliverySystem[x][y].passwd=NULL;
+	deliverySystem[x][y].building= '-';
+	deliverySystem[x][y].room='-';
+	deliverySystem[x][y].cnt=0;
+	strcpy(deliverySystem[x][y].passwd,NULL);
 	
 	
 	
@@ -105,7 +105,7 @@ int str_backupSystem(char* filepath) {
 		{
 			if(deliverySystem[i][j].cnt==1)
 			{
-				fprintf(fp,"%d %d %s %s",deliverySystem[i][j].building,deliverySystem[i][j].room,
+				fprintf(fp,"%d %d %d %d %s %s",i,j,deliverySystem[i][j].building,deliverySystem[i][j].room,
 				deliverySystem[i][j].passwd,deliverySystem[i][j].context);
 			}
 		}
@@ -128,13 +128,61 @@ int str_backupSystem(char* filepath) {
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
 	
+	
+	int i,j;
+	int x,y;
+	int nBuilding, nRoom;
+	int pwd[PASSWD_LEN+1];
+	int str[100];
+	
 	FILE *fp;
 	fp=fopen(filepath,"r");
 	
-	fscanf(fp,"")
+	//read to row & column
+	fscanf(fp,"%d %d",&systemSize[0],&systemSize[1]);
+	
+	//create delivery system
+	deliverySystem = (struct storage_t**)malloc(systemSize[0] * sizeof(storage_t*));
+	
+	for (i=0;i<systemSize[0];i++)
+	{
+		deliverySystem[i] = (struct storage_t*)malloc(systemSize[1] * sizeof(storage_t));
+	}
+	
+	for (i=0;i<systemSize[0];i++)
+		for(j=0;j<systemSize[1];j++)
+			{
+				deliverySystem[i][j].cnt=0;
+				
+			}
+	
+	//read to master password
+	fscanf(fp,"%s",masterPassword);
 	
 	
+	while(!feof(fp))
+	{
+		fscanf(fp,"%d %d %d %3d %s %s",&x,&y,&nBuilding,&nRoom,pwd,str);
+		
+		deliverySystem[x][y].building = nBuilding;
+		deliverySystem[x][y].room = nRoom;
+		strcpy(deliverySystem[x][y].passwd,pwd);
+		deliverySystem[x][y].cnt=1;
+		
+	}
+	//read to past contexts
+	
+	for(i=0;i<system[0];i++)
+		for(j=0;j<system[i][j];j++)
+		{
+			deliverySystem[i][j].context=(char*)malloc(10*sizeof(char));
+		}
+	
+	fclose(fp);
 	return 0;
+	
+	//if()
+		//return -1;
 	
 }
 
@@ -211,13 +259,13 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 		deliverySystem[x][y].building=nBuilding;
 		deliverySystem[x][y].room=nRoom;
 		deliverySystem[x][y].context=msg[MAX_MSG_SIZE+1];
-		deliverySystem[x][y].passwd=passwd[PASSWD_LEN+1];
+		strcpy(deliverySystem[x][y].passwd,passwd[PASSWD_LEN+1]);
 		
 		deliverySystem[x][y].cnt=1;
 		
 		return 0;
 	}
-	else if()
+	else
 	{
 		return -1;
 	}
@@ -254,16 +302,16 @@ int str_extractStorage(int x, int y) {
 int str_findStorage(int nBuilding, int nRoom) {
 	
 	int i,j;
-	for(i=0;i<systemSize[0];i++)
-	{
-		for(j=0;j<systemSize[1];j++)
-		{
-			if()
-			{
-				
-			}
-		}
-	}
-	return cnt;
+	//for(i=0;i<systemSize[0];i++)
+	//{
+	//	for(j=0;j<systemSize[1];j++)
+	//	{
+	//		if()
+	//		{
+	//			
+	//		}
+	//	}
+	//}
+	//return cnt;
 }
 

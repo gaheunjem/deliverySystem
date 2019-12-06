@@ -180,15 +180,15 @@ int str_createSystem(char* filepath) {
 		
 	}
 	
-	
+	storedCnt=storedCnt-1;
 	
 	
 	fclose(fp);
 	
 	return 0;
 	
-	//if()
-		//return -1;
+	if(fp==NULL)
+		return -1;
 	
 }
 
@@ -292,18 +292,22 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 //return : 0 - successfully extracted, -1 = failed to extract
 int str_extractStorage(int x, int y) {
 	
+	int matching;
 	
-	if(inputPasswd(x,y)==0)
+	matching=inputPasswd(x,y);
+	
+	if(matching==0) //password is matching
 	{
 		printf(" -----------> extracting the storage (%d,%d)...",x,y);
-		storedCnt--;
+		storedCnt--;//whole number of cells occupied - number of extracted store
 		printStorageInside(x,y);
 		initStorage(x,y);
 		
 		return 0;
 	}
-	else if(inputPasswd(x,y)==1)
+	else if(matching!=0)//password is not matching
 	{
+		printf(" -----------> password is wrong!!\n");
 		return -1;
 	}
 }
@@ -316,7 +320,7 @@ int str_findStorage(int nBuilding, int nRoom) {
 	
 	int i,j;
 	int cnt;
-	int NumB, NumR;
+	int NumB, NumR;//Number of someone's Buliding and Room
 	
 	for(i=0;i<systemSize[0];i++)
 		for(j=0;j<systemSize[1];j++)
@@ -326,7 +330,7 @@ int str_findStorage(int nBuilding, int nRoom) {
 			
 			if(nBuilding==NumB && nRoom==NumR)
 			{
-				printf("-----------> Found a package in (%d,%d)\n",i,j);
+				printf(" -----------> Found a package in (%d,%d)\n",i,j);
 				cnt++;
 			}
 		}

@@ -176,10 +176,6 @@ int str_createSystem(char* filepath) {
 		deliverySystem[x][y].cnt=1;
 		strcpy(deliverySystem[x][y].context,str);
 		
-		printf("%d ",deliverySystem[x][y].building);
-		printf("%d ",deliverySystem[x][y].room);
-		printf("%s ",deliverySystem[x][y].passwd);
-		printf("%s",deliverySystem[x][y].context);
 		storedCnt++;
 		
 	}
@@ -199,7 +195,14 @@ int str_createSystem(char* filepath) {
 //free the memory of the deliverySystem
 void str_freeSystem(void) {
 	
+ 	int i;
+ 	
+ 	for(i=0;i<systemSize[0];i++)
+ 	{
+ 		free(deliverySystem[i]);	
+	}
 	
+	free(deliverySystem);
 }
 
 //print the current state of the whole delivery system (which cells are occupied and the destination of the each occupied cells)
@@ -323,7 +326,7 @@ int str_findStorage(int nBuilding, int nRoom) {
 			
 			if(nBuilding==NumB && nRoom==NumR)
 			{
-				printf("-----------> Found a package in (%d,%d)",i,j);
+				printf("-----------> Found a package in (%d,%d)\n",i,j);
 				cnt++;
 			}
 		}

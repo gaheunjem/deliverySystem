@@ -54,7 +54,7 @@ static void initStorage(int x, int y) {
 	
 	//deliverySystem[x][y].building=NULL;
 	//deliverySystem[x][y].room=NULL;
-	deliverySystem[x][y].cnt=0;
+	deliverySystem[x][y].cnt=0;//check the storage is empty now
 	//strcpy(deliverySystem[x][y].passwd,NULL);
 	//strcpy(deliverySystem[x][y].context,NULL);
 }
@@ -64,17 +64,20 @@ static void initStorage(int x, int y) {
 //return : 0 - password is matching, -1 - password is not matching
 static int inputPasswd(int x, int y) {
 	
-	int a;
+	int matchpwd;
+	int matchmasterpwd;
 	char s1[PASSWD_LEN+1];
-	printf(" - input password for (%d,%d ) storage : ",x,y);
+	printf(" - input password for (%d,%d) storage : ",x,y);
 	scanf("%s",&s1);
-	a=strcmp(s1, deliverySystem[x][y].passwd); 
 	
-	if(a==0)
+	matchpwd=strcmp(s1, deliverySystem[x][y].passwd);// input passwrd is matching? 
+	matchmasterpwd=strcmp(s1, masterPassword);// input passwrd is matching with masterpwd?
+	
+	if(matchpwd==0||matchmasterpwd==0)//input passwrd match correct pwd or is masterpwd
 	{
 		return 0;
 	}
-	else if(a==1)
+	else if(matchpwd==1&&matchmasterpwd==1)//input passwrd no match correct pwd and is not masterpwd
 	{
 		return -1;
 	}
@@ -96,9 +99,10 @@ int str_backupSystem(char* filepath) {
 	
 	fp=fopen("storage.txt","w");
 	
-	fprintf(fp,"%d %d\n",systemSize[0],systemSize[1]);
-	fprintf(fp,"%s\n",masterPassword);
+	fprintf(fp,"%d %d\n",systemSize[0],systemSize[1]);//backup row/column on filepath
+	fprintf(fp,"%s\n",masterPassword);//backup masterpasswrd on filepath
 
+	//backup number of building, room and passwrd and context on filepath
 	for(i=0;i<systemSize[0];i++)
 	{
 		for(j=0;j<systemSize[1];j++)
@@ -111,10 +115,10 @@ int str_backupSystem(char* filepath) {
 		}
 	}
 	
-	
+	//if backup wansn't working
 	if(fp==NULL)
 	{
-		//return -1;
+		return -1;
 	}
 	
 	fclose(fp);
@@ -142,7 +146,7 @@ int str_createSystem(char* filepath) {
 	//read to row & column
 	fscanf(fp,"%d %d",&systemSize[0],&systemSize[1]);
 	
-	//create delivery system
+	//create delivery system deliverySystem[][]
 	deliverySystem = (struct storage_t**)malloc(systemSize[0] * sizeof(storage_t*));
 	
 	for (i=0;i<systemSize[0];i++)
@@ -156,7 +160,7 @@ int str_createSystem(char* filepath) {
 				deliverySystem[i][j].cnt=0;
 				
 			}
-	
+	//create system for context
 	for(i=0;i<systemSize[0];i++)
 		for(j=0;j<systemSize[1];j++)
 		{
@@ -166,6 +170,7 @@ int str_createSystem(char* filepath) {
 	//read to master password
 	fscanf(fp,"%s",masterPassword);
 	
+	//read number of building, room and passwd, context
 	while(!feof(fp))
 	{
 		fscanf(fp,"%d %d %d %3d %s %s",&x,&y,&nBuilding,&nRoom,pwd,str);
@@ -173,10 +178,10 @@ int str_createSystem(char* filepath) {
 		deliverySystem[x][y].building = nBuilding;
 		deliverySystem[x][y].room = nRoom;
 		strcpy(deliverySystem[x][y].passwd,pwd);
-		deliverySystem[x][y].cnt=1;
+		deliverySystem[x][y].cnt=1;//check the storage is not empty now.
 		strcpy(deliverySystem[x][y].context,str);
 		
-		storedCnt++;
+		storedCnt++;//whole number storage that have something ++
 		
 	}
 	
@@ -266,6 +271,7 @@ int str_checkStorage(int x, int y) {
 //return : 0 - successfully put the package, -1 - failed to put
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_SIZE+1], char passwd[PASSWD_LEN+1]) {
 	
+	// input a package to the right place
 	if(deliverySystem[x][y].cnt==0)
 	{
 		deliverySystem[x][y].building=nBuilding;
@@ -273,7 +279,7 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 		strcpy(deliverySystem[x][y].context,msg);
 		strcpy(deliverySystem[x][y].passwd,passwd);
 		
-		deliverySystem[x][y].cnt=1;
+		deliverySystem[x][y].cnt=1;//check the storage is not empty now.
 		storedCnt++;
 		return 0;
 	}
@@ -328,7 +334,7 @@ int str_findStorage(int nBuilding, int nRoom) {
 			NumB=deliverySystem[i][j].building;
 			NumR=deliverySystem[i][j].room;
 			
-			if(nBuilding==NumB && nRoom==NumR)
+			if(nBuilding==NumB && nRoom==NumR) // Number of buliding and room is matching
 			{
 				printf(" -----------> Found a package in (%d,%d)\n",i,j);
 				cnt++;

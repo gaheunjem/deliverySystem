@@ -1,8 +1,6 @@
 4 6
 1234
-0 0 1 101 1234 programmingbye
 0 2 4 710 3923 sookmyung
 1 1 1 101 1234 1234
-2 3 6 902 hihi programming
+2 2 3 103 1234 모르겠어요
 3 4 8 504 5312 helloWorld
-3 5 3 103 dddd mess

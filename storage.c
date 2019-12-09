@@ -116,7 +116,7 @@ int str_backupSystem(char* filepath) {
 	}
 	
 	//if backup wansn't working
-	if(fp==NULL)
+	if(fp==NULL)// fp has no useful value
 	{
 		return -1;
 	}
@@ -147,11 +147,11 @@ int str_createSystem(char* filepath) {
 	fscanf(fp,"%d %d",&systemSize[0],&systemSize[1]);
 	
 	//create delivery system deliverySystem[][]
-	deliverySystem = (struct storage_t**)malloc(systemSize[0] * sizeof(storage_t*));
+	deliverySystem = (storage_t**)malloc(systemSize[0] * sizeof(storage_t*));
 	
 	for (i=0;i<systemSize[0];i++)
 	{
-		deliverySystem[i] = (struct storage_t*)malloc(systemSize[1] * sizeof(storage_t));
+		deliverySystem[i] = (storage_t*)malloc(systemSize[1] * sizeof(storage_t));
 	}
 	
 	for (i=0;i<systemSize[0];i++)

@@ -52,11 +52,11 @@ static void printStorageInside(int x, int y) {
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
 	
-	//deliverySystem[x][y].building=NULL;
-	//deliverySystem[x][y].room=NULL;
+	deliverySystem[x][y].building=0;
+	deliverySystem[x][y].room=0;
 	deliverySystem[x][y].cnt=0;//check the storage is empty now
-	//strcpy(deliverySystem[x][y].passwd,NULL);
-	//strcpy(deliverySystem[x][y].context,NULL);
+	strcpy(deliverySystem[x][y].passwd,"aaaa");
+	strcpy(deliverySystem[x][y].context,"bbbb");
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -137,8 +137,8 @@ int str_createSystem(char* filepath) {
 	int i,j;
 	int x,y;
 	int nBuilding, nRoom;
-	int pwd[PASSWD_LEN+1];
-	int str[100];
+	char pwd[PASSWD_LEN+1];
+	char str[100];
 	
 	FILE *fp;
 	fp=fopen(filepath,"r");
@@ -166,6 +166,9 @@ int str_createSystem(char* filepath) {
 		{
 			deliverySystem[i][j].context=(char*)malloc(10*sizeof(char));
 		}
+	
+		
+	
 		
 	//read to master password
 	fscanf(fp,"%s",masterPassword);
@@ -185,6 +188,7 @@ int str_createSystem(char* filepath) {
 		
 	}
 	
+
 	storedCnt=storedCnt-1;
 	
 	
@@ -334,7 +338,7 @@ int str_findStorage(int nBuilding, int nRoom) {
 			NumB=deliverySystem[i][j].building;
 			NumR=deliverySystem[i][j].room;
 			
-			if(nBuilding==NumB && nRoom==NumR) // Number of buliding and room is matching
+			if(nBuilding==NumB && nRoom==NumR && deliverySystem[i][j].cnt==1) // Number of buliding and room is matching
 			{
 				printf(" -----------> Found a package in (%d,%d)\n",i,j);
 				cnt++;

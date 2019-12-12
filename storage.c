@@ -52,11 +52,11 @@ static void printStorageInside(int x, int y) {
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
 	
-	deliverySystem[x][y].building=0;
-	deliverySystem[x][y].room=0;
+	deliverySystem[x][y].building=0;//initiate buliding num
+	deliverySystem[x][y].room=0;//initiate room num
 	deliverySystem[x][y].cnt=0;//check the storage is empty now
-	strcpy(deliverySystem[x][y].passwd,"aaaa");
-	strcpy(deliverySystem[x][y].context,"bbbb");
+	strcpy(deliverySystem[x][y].passwd,"aaaa");//initiate passwd
+	strcpy(deliverySystem[x][y].context,"bbbb");//initiate context
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -70,8 +70,8 @@ static int inputPasswd(int x, int y) {
 	printf(" - input password for (%d,%d) storage : ",x,y);
 	scanf("%s",&s1);
 	
-	matchpwd=strcmp(s1, deliverySystem[x][y].passwd);// input passwrd is matching? 
-	matchmasterpwd=strcmp(s1, masterPassword);// input passwrd is matching with masterpwd?
+	matchpwd=strcmp(s1, deliverySystem[x][y].passwd);// input passwrd is matching? maching(0) no(1)
+	matchmasterpwd=strcmp(s1, masterPassword);// input passwrd is matching with masterpwd? maching(0) no(1)
 	
 	if(matchpwd==0||matchmasterpwd==0)//input passwrd match correct pwd or is masterpwd
 	{
@@ -147,13 +147,14 @@ int str_createSystem(char* filepath) {
 	fscanf(fp,"%d %d",&systemSize[0],&systemSize[1]);
 	
 	//create delivery system deliverySystem[][]
-	deliverySystem = (storage_t**)malloc(systemSize[0] * sizeof(storage_t*));
+	deliverySystem = (storage_t**)malloc(systemSize[0] * sizeof(storage_t*));//row
 	
 	for (i=0;i<systemSize[0];i++)
 	{
-		deliverySystem[i] = (storage_t*)malloc(systemSize[1] * sizeof(storage_t));
+		deliverySystem[i] = (storage_t*)malloc(systemSize[1] * sizeof(storage_t));//column
 	}
 	
+	//initiate each storage cnt
 	for (i=0;i<systemSize[0];i++)
 		for(j=0;j<systemSize[1];j++)
 			{
@@ -174,7 +175,7 @@ int str_createSystem(char* filepath) {
 	fscanf(fp,"%s",masterPassword);
 	
 	//read number of building, room and passwd, context
-	while(!feof(fp))
+	while(!feof(fp))//if didn't reach end of file
 	{
 		fscanf(fp,"%d %d %d %3d %s %s",&x,&y,&nBuilding,&nRoom,pwd,str);
 		
@@ -204,14 +205,24 @@ int str_createSystem(char* filepath) {
 //free the memory of the deliverySystem
 void str_freeSystem(void) {
 	
- 	int i;
+ 	int i,j;
  	
+ 	//free deliverySystem malloc
  	for(i=0;i<systemSize[0];i++)
  	{
  		free(deliverySystem[i]);	
 	}
 	
 	free(deliverySystem);
+	
+	//free context malloc 
+	for(i=0;i<systemSize[0];i++)
+		for(j=0;j<systemSize[1];j++)
+		{
+			free(deliverySystem[i][j].context);
+		}
+	
+	
 }
 
 //print the current state of the whole delivery system (which cells are occupied and the destination of the each occupied cells)
@@ -278,16 +289,16 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 	// input a package to the right place
 	if(deliverySystem[x][y].cnt==0)
 	{
-		deliverySystem[x][y].building=nBuilding;
-		deliverySystem[x][y].room=nRoom;
-		strcpy(deliverySystem[x][y].context,msg);
-		strcpy(deliverySystem[x][y].passwd,passwd);
+		deliverySystem[x][y].building=nBuilding; //allocate buliding num
+		deliverySystem[x][y].room=nRoom; //allocate room num
+		strcpy(deliverySystem[x][y].context,msg); //allocate context
+		strcpy(deliverySystem[x][y].passwd,passwd); //allocate passwd
 		
 		deliverySystem[x][y].cnt=1;//check the storage is not empty now.
 		storedCnt++;
 		return 0;
 	}
-	else
+	else //failed to put
 	{
 		return -1;
 	}
@@ -304,7 +315,7 @@ int str_extractStorage(int x, int y) {
 	
 	int matching;
 	
-	matching=inputPasswd(x,y);
+	matching=inputPasswd(x,y); // 0 or !0
 	
 	if(matching==0) //password is matching
 	{
@@ -329,7 +340,7 @@ int str_extractStorage(int x, int y) {
 int str_findStorage(int nBuilding, int nRoom) {
 	
 	int i,j;
-	int cnt;
+	int cnt; // number of packages that the storage system has
 	int NumB, NumR;//Number of someone's Buliding and Room
 	
 	for(i=0;i<systemSize[0];i++)
@@ -338,7 +349,8 @@ int str_findStorage(int nBuilding, int nRoom) {
 			NumB=deliverySystem[i][j].building;
 			NumR=deliverySystem[i][j].room;
 			
-			if(nBuilding==NumB && nRoom==NumR && deliverySystem[i][j].cnt==1) // Number of buliding and room is matching
+			//if Number of buliding and room is matching and storage is full
+			if(nBuilding==NumB && nRoom==NumR && deliverySystem[i][j].cnt==1) 
 			{
 				printf(" -----------> Found a package in (%d,%d)\n",i,j);
 				cnt++;
